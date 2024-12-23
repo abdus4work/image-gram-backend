@@ -7,32 +7,27 @@ const userService = new UserService();
 
 class AuthService {
   async signup(data) {
-    try {
-      const user = await userService.createUser(data);
-      // Generating access token
-      const accessToken = this.generateAccessToken({
-        id: user._id,
-        email: user.email,
-        username: user.username
-      });
+    const user = await userService.createUser(data);
+    // Generating access token
+    const accessToken = this.generateAccessToken({
+      id: user._id,
+      email: user.email,
+      username: user.username
+    });
 
-      // Generating refresh token
-      const refreshToken = this.generateRefreshToken({ id: user._id });
+    // Generating refresh token
+    const refreshToken = this.generateRefreshToken({ id: user._id });
 
-      // Updating user with refresh token
-      const updatedUser = await userService.updateUser(user._id, {
-        refreshToken
-      });
+    // Updating user with refresh token
+    const updatedUser = await userService.updateUser(user._id, {
+      refreshToken
+    });
 
-      return {
-        user: updatedUser,
-        accessToken,
-        refreshToken
-      };
-    } catch (err) {
-      //TODO: handle error
-      throw err;
-    }
+    return {
+      user: updatedUser,
+      accessToken,
+      refreshToken
+    };
   }
 
   generateAccessToken(payload) {
