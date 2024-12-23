@@ -30,6 +30,8 @@ class AuthService {
     };
   }
 
+  // TODO Implement login method
+
   generateAccessToken(payload) {
     return jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
       expiresIn: configs.JWT_ACCESS_EXPIRY
