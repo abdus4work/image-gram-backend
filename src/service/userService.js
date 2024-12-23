@@ -66,6 +66,21 @@ class UserService {
       );
     }
   }
+
+  async getByEmailOrUsername(identifier) {
+    const user =await userRepository.getByEmailOrUsername(identifier);
+    console.log(user);
+    
+    if(!user){
+      throw new CustomError(
+        StatusCodes.BAD_REQUEST,
+        ErrorCodes.USER_NOT_FOUND,
+        `user not found with this ${identifier} identifier`
+      )
+    }
+
+    return user;
+  }
 }
 
 export default UserService;

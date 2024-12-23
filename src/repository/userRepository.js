@@ -9,7 +9,7 @@ class UserRepository extends CrudRepository {
   async getByEmailOrUsername(identifier) {
     return this.model
       .findOne({ $or: [{ email: identifier }, { username: identifier }] })
-      .select('-password -__V, -refreshToken');
+      .select('-password -__V -refreshToken');
   }
 }
 
