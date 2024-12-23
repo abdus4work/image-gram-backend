@@ -1,3 +1,4 @@
+
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
@@ -18,6 +19,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Email is required'],
       unique: true,
+      validate: {
+        validator: v=>{
+          return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        },
+        message: props => `${props.value} is not a valid email!`
+      },
       minLength: [6, 'Email must be at least 6 characters']
     },
     username: {
@@ -44,6 +51,7 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next();
   const salt = bcrypt.genSaltSync(10);
   this.password = bcrypt.hashSync(this.password, salt);
+  next();
 });
 
 const userModel = mongoose.model('User', userSchema);

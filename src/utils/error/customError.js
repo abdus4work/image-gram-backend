@@ -5,14 +5,15 @@ class CustomError extends Error{
     statusCode,
     errorCode='ERR_GENERIC',
     message='Something went wrong',
-    details=null
+    details=null,
+    data={}
   ) {
     super(message);
     this.statusCode = statusCode;
     this.errorCode = errorCode;
     this.message = message;
     this.details = details;
-    this.data = {};
+    this.data =data;
 
     Error.captureStackTrace(this,this.constructor);
   }

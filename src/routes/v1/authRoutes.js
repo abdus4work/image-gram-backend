@@ -1,7 +1,12 @@
 import express from 'express';
 
-const authRouter = express.Router();
+import AuthController from '../../controller/authController.js';
+import zodUserSchema from '../../validators/zodUserSchema.js';
+import { validate } from '../../validators/zodValidator.js';
 
-authRouter.post('/signup');
+const authRouter = express.Router();
+const authController = new AuthController();
+
+authRouter.post('/signup',validate(zodUserSchema),authController.signup);
 
 export default authRouter;
