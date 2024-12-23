@@ -6,7 +6,11 @@ class UserRepository extends CrudRepository {
     super(userModel);
   }
 
-  async getByEmailOrUsername(identifier){
-    return this.model.findOne({$or:[{email:identifier},{username:identifier}]}).select('-password -__V, -refreshToken');
+  async getByEmailOrUsername(identifier) {
+    return this.model
+      .findOne({ $or: [{ email: identifier }, { username: identifier }] })
+      .select('-password -__V, -refreshToken');
   }
 }
+
+export default UserRepository;
