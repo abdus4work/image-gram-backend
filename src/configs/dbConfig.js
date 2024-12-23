@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import configs from './server.config.js';
+import configs from './serverConfig.js';
 
 export default async function connectDB() {
   try {
