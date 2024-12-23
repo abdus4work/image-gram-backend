@@ -1,4 +1,5 @@
 import express from 'express';
+
 import authRouter from './auth.routes.js';
 
 const v1Router = express.Router();
