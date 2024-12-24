@@ -69,8 +69,6 @@ class UserService {
 
   async getByEmailOrUsername(identifier) {
     const user =await userRepository.getByEmailOrUsername(identifier);
-    console.log(user);
-    
     if(!user){
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
