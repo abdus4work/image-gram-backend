@@ -1,7 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
-import CustomError from '../utils/error/customError.js';
+
 import configs from '../configs/serverConfig.js';
 import AuthService from '../service/authService.js';
+import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
 
 const authService = new AuthService();
