@@ -1,6 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 
 import configs from '../configs/serverConfig.js';
+import CustomError from '../utils/error/customError.js';
+import ErrorCodes from '../utils/error/errorCodes.js';
 import UserService from './userService.js';
 
 const userService = new UserService();
@@ -48,7 +51,34 @@ class AuthService {
     return jwt.verify(token, secret);
   }
 
-  async generateNewAccessToken(refreshToken) {}
+  async generateNewAccessToken(refreshToken) {
+    const { id } = this.verifyToken(refreshToken, configs.JWT_REFRESH_SECRET);
+    const user = await userService.getUserById(id);
+    if (user.refreshToken !== refreshToken) {
+      throw new CustomError(
+        StatusCodes.UNAUTHORIZED,
+        ErrorCodes.UNAUTHORIZED,
+        'Invalid token'
+      );
+    }
+
+    const accessToken = this.generateAccessToken({
+      id: user._id,
+      email: user.email,
+      username: user.username
+    });
+
+    const newRefreshToken = this.generateRefreshToken({ id: user._id });
+    const updatedUser = await userService.updateUser(user._id, {
+      refreshToken: newRefreshToken
+    });
+
+    return {
+      user: updatedUser,
+      accessToken,
+      refreshToken: newRefreshToken
+    };
+  }
 }
 
 export default AuthService;

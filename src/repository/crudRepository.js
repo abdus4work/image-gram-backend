@@ -9,50 +9,50 @@ class CrudRepository {
 
   async getAll(populateOptions = null, selectOptions = null) {
     const query = this.model.find();
-    if(populateOptions){
-      if(Array.isArray(populateOptions)){
-        populateOptions.forEach(option => {
+    if (populateOptions) {
+      if (Array.isArray(populateOptions)) {
+        populateOptions.forEach((option) => {
           query.populate(option);
         });
-      }else{
+      } else {
         query.populate(populateOptions);
       }
     }
-    if(selectOptions){
+    if (selectOptions) {
       query.select(selectOptions);
     }
     return await query;
   }
 
-  async getById(id,populateOptions = null, selectOptions = null) {
+  async getById(id, populateOptions = null, selectOptions = null) {
     const query = this.model.findById(id);
-    if(populateOptions){
-      if(Array.isArray(populateOptions)){
-        populateOptions.forEach(option => {
+    if (populateOptions) {
+      if (Array.isArray(populateOptions)) {
+        populateOptions.forEach((option) => {
           query.populate(option);
         });
-      }else{
+      } else {
         query.populate(populateOptions);
       }
     }
-    if(selectOptions){
+    if (selectOptions) {
       query.select(selectOptions);
     }
     return await query;
   }
 
-  async update(id,data,populateOptions = null, selectOptions = null) {
-    const query = this.model.findByIdAndUpdate(id,data,{new:true});
-    if(populateOptions){
-      if(Array.isArray(populateOptions)){
-        populateOptions.forEach(option => {
+  async update(id, data, populateOptions = null, selectOptions = null) {
+    const query = this.model.findByIdAndUpdate(id, data, { new: true });
+    if (populateOptions) {
+      if (Array.isArray(populateOptions)) {
+        populateOptions.forEach((option) => {
           query.populate(option);
         });
-      }else{
+      } else {
         query.populate(populateOptions);
       }
     }
-    if(selectOptions){
+    if (selectOptions) {
       query.select(selectOptions);
     }
     return await query;
@@ -62,6 +62,5 @@ class CrudRepository {
     return await this.model.findByIdAndDelete(id);
   }
 }
-
 
 export default CrudRepository;

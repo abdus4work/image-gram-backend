@@ -55,11 +55,13 @@ class AuthMiddleware {
         );
       }
       if (err.name === 'TokenExpiredError') {
-        new CustomError(
-          StatusCodes.UNAUTHORIZED,
-          ErrorCodes.UNAUTHORIZED,
-          'Token expired'
-        );
+        next(
+          new CustomError(
+            StatusCodes.UNAUTHORIZED,
+            ErrorCodes.UNAUTHORIZED,
+            'Token expired'
+          )
+        )
       }
       next(err);
     }

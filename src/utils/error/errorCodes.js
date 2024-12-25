@@ -28,7 +28,7 @@ const ErrorCodes = {
 
   // External API or Service Errors
   EXTERNAL_API_ERROR: 'ERR_EXTERNAL_API_ERROR',
-  THIRD_PARTY_SERVICE_DOWN: 'ERR_THIRD_PARTY_SERVICE_DOWN',
+  THIRD_PARTY_SERVICE_DOWN: 'ERR_THIRD_PARTY_SERVICE_DOWN'
 };
 
 export default ErrorCodes;

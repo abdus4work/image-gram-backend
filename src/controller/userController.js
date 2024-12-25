@@ -15,8 +15,8 @@ class UserController {
         throw new CustomError(
           StatusCodes.BAD_REQUEST,
           ErrorCodes.INVALID_INPUT,
-          'Invalid username is provided',
-          null,
+          'Username is required',
+          {},
           {
             inputData: req.params
           }
@@ -26,7 +26,7 @@ class UserController {
 
       return res
         .status(StatusCodes.OK)
-        .json(new SuccessResponse(StatusCodes.OK, 'success', user));
+        .json(new SuccessResponse(StatusCodes.OK, 'success', user).sendResponse());
     } catch (error) {
       next(error);
     }

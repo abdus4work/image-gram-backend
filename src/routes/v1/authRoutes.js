@@ -7,6 +7,6 @@ import { validate } from '../../validators/zodValidator.js';
 const authRouter = express.Router();
 const authController = new AuthController();
 
-authRouter.post('/signup',validate(zodUserSchema),authController.signup);
-
+authRouter.post('/signup', validate(zodUserSchema), authController.signup);
+authRouter.get('/generate-new-token',authController.generateNewToken);
 export default authRouter;

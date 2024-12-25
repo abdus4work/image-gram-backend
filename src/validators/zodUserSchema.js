@@ -1,12 +1,12 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 const zodUserSchema = z.object({
   fullName: z.string().trim().optional(),
   avatar: z.string().optional(),
   role: z.enum(['user', 'admin']).default('user'),
-  email:z.string().email().min(6).trim(),
+  email: z.string().email().min(6).trim(),
   username: z.string().min(3).trim(),
-  password: z.string().min(6),
-})
+  password: z.string().min(6)
+});
 
 export default zodUserSchema;

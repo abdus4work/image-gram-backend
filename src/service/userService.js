@@ -9,16 +9,7 @@ const userRepository = new UserRepository();
 class UserService {
   async createUser(data) {
     try {
-      const user = await userRepository.create(data);
-      if (!user) {
-        throw new CustomError(
-          StatusCodes.BAD_REQUEST,
-          ErrorCodes.USER_NOT_CREATED,
-          'User not created',
-          { inputData: data }
-        );
-      }
-      return user;
+      return await userRepository.create(data);
     } catch (err) {
       if (err.code === 11000) {
         throw new CustomError(
@@ -34,31 +25,21 @@ class UserService {
   }
 
   async updateUser(id, data) {
-    try {
-      const user = await userRepository.update(
-        id,
-        data,
-        null,
-        '-password -__v -refreshToken'
-      );
-      if (!user) {
-        throw new CustomError(
-          StatusCodes.NOT_FOUND,
-          ErrorCodes.USER_NOT_FOUND,
-          'User not found',
-          { inputData: data }
-        );
-      }
-      return user;
-    } catch (err) {
+    const user = await userRepository.update(
+      id,
+      data,
+      null,
+      '-password -__v -refreshToken'
+    );
+    if (!user) {
       throw new CustomError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        ErrorCodes.INTERNAL_SERVER_ERROR,
-        'Internal server error',
-        err.message,
+        StatusCodes.NOT_FOUND,
+        ErrorCodes.USER_NOT_FOUND,
+        'User not found',
         { inputData: data }
       );
     }
+    return user;
   }
 
   async getByEmailOrUsername(identifier) {
@@ -71,6 +52,18 @@ class UserService {
       );
     }
 
+    return user;
+  }
+
+  async getUserById(id) {
+    const user = await userRepository.getById(id);
+    if (!user) {
+      throw new CustomError(
+        StatusCodes.BAD_REQUEST,
+        ErrorCodes.USER_NOT_FOUND,
+        `user not found with this ${id} identifier`
+      );
+    }
     return user;
   }
 }
