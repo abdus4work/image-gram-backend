@@ -47,6 +47,8 @@ class AuthService {
   verifyToken(token, secret) {
     return jwt.verify(token, secret);
   }
+
+  async generateNewAccessToken(refreshToken) {}
 }
 
 export default AuthService;
