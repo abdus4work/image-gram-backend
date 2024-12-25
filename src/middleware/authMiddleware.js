@@ -10,21 +10,35 @@ const authService = new AuthService();
 class AuthMiddleware {
   isAuthenticated(req, res, next) {
     try {
-      const token = req.headers.authorization.split(' ')[1];
+      const authorizationHeader = req.headers.authorization;
+      if (!authorizationHeader) {
+        return next(
+          new CustomError(
+            StatusCodes.UNAUTHORIZED,
+            ErrorCodes.UNAUTHORIZED,
+            'Authorization header not provided'
+          )
+        );
+      }
+      const token = req.headers?.authorization?.split(' ')[1];
       if (!token) {
-        throw new CustomError(
-          StatusCodes.UNAUTHORIZED,
-          ErrorCodes.UNAUTHORIZED,
-          'Token not provided'
+        return next(
+          new CustomError(
+            StatusCodes.UNAUTHORIZED,
+            ErrorCodes.UNAUTHORIZED,
+            'Token not provided'
+          )
         );
       }
 
       const decoded = authService.verifyToken(token, configs.JWT_ACCESS_SECRET);
       if (!decoded) {
-        throw new CustomError(
-          StatusCodes.UNAUTHORIZED,
-          ErrorCodes.UNAUTHORIZED,
-          'Invalid token'
+        return next(
+          new CustomError(
+            StatusCodes.UNAUTHORIZED,
+            ErrorCodes.UNAUTHORIZED,
+            'Invalid token'
+          )
         );
       }
 

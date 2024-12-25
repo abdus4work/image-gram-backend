@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
+
 import configs from '../configs/serverConfig.js';
 
 const userSchema = new mongoose.Schema(
@@ -38,8 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: function(){
-        return `${configs.DEFAULT_USER_IMAGE}/${this.username}`
+      default: function () {
+        return `${configs.DEFAULT_USER_IMAGE}/${this.username}`;
       }
     },
     refreshToken: {

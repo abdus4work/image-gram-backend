@@ -33,5 +33,4 @@ class UserController {
   }
 }
 
-export default UserControlle;
-r;
+export default UserController;

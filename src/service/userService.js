@@ -29,13 +29,7 @@ class UserService {
           { inputData: data }
         );
       }
-      throw new CustomError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        ErrorCodes.INTERNAL_SERVER_ERROR,
-        'Internal server error',
-        err.message,
-        { inputData: data }
-      );
+      throw err;
     }
   }
 
@@ -68,13 +62,13 @@ class UserService {
   }
 
   async getByEmailOrUsername(identifier) {
-    const user =await userRepository.getByEmailOrUsername(identifier);
-    if(!user){
+    const user = await userRepository.getByEmailOrUsername(identifier);
+    if (!user) {
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
         ErrorCodes.USER_NOT_FOUND,
         `user not found with this ${identifier} identifier`
-      )
+      );
     }
 
     return user;
