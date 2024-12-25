@@ -23,6 +23,18 @@ class AuthMiddleware {
       }
 
       const decoded = authService.verifyToken(token, configs.JWT_ACCESS_SECRET);
+      if (!decoded) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json(
+            new CustomError(
+              StatusCodes.UNAUTHORIZED,
+              ErrorCodes.UNAUTHORIZED,
+              'Invalid token'
+            )
+          );
+      }
+
       req.user = decoded;
       next();
     } catch (err) {
