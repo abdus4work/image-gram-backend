@@ -35,6 +35,8 @@ class AuthController {
     }
   }
 
+  //TODO Implement login method
+
   async generateNewToken(req, res, next) {
     try {
       const token = req.cookies.refreshToken;
@@ -62,7 +64,9 @@ class AuthController {
           new SuccessResponse(
             StatusCodes.OK,
             'Token generated successfully',
-            data
+            {
+              accessToken: data.accessToken
+            }
           ).sendResponse()
         );
     } catch (err) {

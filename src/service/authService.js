@@ -69,15 +69,14 @@ class AuthService {
     });
 
     const newRefreshToken = this.generateRefreshToken({ id: user._id });
-    const updatedUser = await userService.updateUser(user._id, {
+    await userService.updateUser(user._id, {
       refreshToken: newRefreshToken
     });
 
     return {
-      user: updatedUser,
       accessToken,
       refreshToken: newRefreshToken
-    };
+    }
   }
 }
 
