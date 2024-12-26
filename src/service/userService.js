@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 
 import UserRepository from '../repository/userRepository.js';
@@ -43,7 +44,7 @@ class UserService {
   }
 
   async getByEmailOrUsername(identifier) {
-    const user = await userRepository.getByEmailOrUsername(identifier);
+    const user = await userRepository.getByEmailOrUsername(identifier,'-__v');
     if (!user) {
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
@@ -65,6 +66,10 @@ class UserService {
       );
     }
     return user;
+  }
+
+  async comparePassword(password, hashedPassword) {
+    return await bcrypt.compare(password, hashedPassword);
   }
 }
 

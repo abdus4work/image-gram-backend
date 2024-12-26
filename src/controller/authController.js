@@ -36,6 +36,27 @@ class AuthController {
   }
 
   //TODO Implement login method
+  async signIn(req, res, next) {
+    try{
+      const data = await authService.signIn(req.body)
+      res.cookie('refreshToken', data.refreshToken, {
+        httpOnly: true,
+        secure: configs.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
+      return res
+        .status(StatusCodes.OK)
+        .json(
+          new SuccessResponse(
+            StatusCodes.OK,
+            'User logged in successfully',
+            data
+          ).sendResponse()
+        );
+    }catch (err){
+      next(err);
+    }
+  }
 
   async generateNewToken(req, res, next) {
     try {

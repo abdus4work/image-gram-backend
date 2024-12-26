@@ -34,6 +34,36 @@ class AuthService {
   }
 
   // TODO Implement login method
+  async signIn(data){
+    const user = await userService.getByEmailOrUsername(data.identifier);
+    if(!user){
+      throw new CustomError(
+        StatusCodes.NOT_FOUND,
+        ErrorCodes.USER_NOT_FOUND,
+        'User not found'
+      );
+    }
+
+    console.log(user);
+
+    const isPasswordValid = await userService.comparePassword(data.password, user.password);
+    if(!isPasswordValid){
+      throw new CustomError(
+        StatusCodes.UNAUTHORIZED,
+        ErrorCodes.UNAUTHORIZED,
+        'Invalid password'
+      );
+    }
+
+    const accessToken = this.generateAccessToken({id: user._id, email: user.email, username: user.username});
+    const refreshToken = this.generateRefreshToken({id: user._id});
+    await userService.updateUser(user._id, {refreshToken});
+    return {
+      user,
+      accessToken,
+      refreshToken
+    }
+  }
 
   generateAccessToken(payload) {
     return jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
