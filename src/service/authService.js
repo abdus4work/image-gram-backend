@@ -33,7 +33,6 @@ class AuthService {
     };
   }
 
-  // TODO Implement login method
   async signIn(data){
     const user = await userService.getByEmailOrUsername(data.identifier);
     if(!user){
@@ -63,6 +62,19 @@ class AuthService {
       accessToken,
       refreshToken
     }
+  }
+
+  async signOut(refreshToken){
+    const {id} = this.verifyToken(refreshToken,configs.JWT_REFRESH_SECRET)
+    const user = await userService.getUserById(id);
+    if(user.refreshToken !== refreshToken){
+      throw new CustomError(
+        StatusCodes.UNAUTHORIZED,
+        ErrorCodes.UNAUTHORIZED,
+        'Invalid token'
+      )
+    }
+    await userService.updateUser(user._id, {refreshToken: ''});
   }
 
   generateAccessToken(payload) {

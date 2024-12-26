@@ -58,6 +58,37 @@ class AuthController {
     }
   }
 
+  async signOut(req, res, next) {
+    try{
+      const token = req.cookies.refreshToken;
+      if(!token){
+        throw new CustomError(
+          StatusCodes.UNAUTHORIZED,
+          ErrorCodes.UNAUTHORIZED,
+          'Refresh token is missing'
+        )
+      }
+
+      await authService.signOut(token);
+
+      res.clearCookie('refreshToken',{
+        httpOnly: true,
+        secure: configs.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
+
+      return res.status(StatusCodes.OK).json(
+        new SuccessResponse(
+          StatusCodes.OK,
+          'User logged out successfully'
+        ).sendResponse()
+      )
+
+    }catch (err){
+      next(err);
+    }
+  }
+
   async generateNewToken(req, res, next) {
     try {
       const token = req.cookies.refreshToken;
