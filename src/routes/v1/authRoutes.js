@@ -11,8 +11,8 @@ const zodAuthSchema = new ZodAuthSchema();
 const authMiddleware = new AuthMiddleware();
 
 authRouter.post('/signup', validate(zodAuthSchema.zodSignUpSchema), authController.signup);
-authRouter.post('/signin',validate(zodAuthSchema.zodSignInSchema),authController.signIn);
-authRouter.post('/signout',authMiddleware.isAuthenticated,authController.signOut);
-authRouter.get('/generate-new-token',authController.generateNewToken);
+authRouter.post('/login',validate(zodAuthSchema.zodSignInSchema),authController.signIn);
+authRouter.post('/logout',authMiddleware.isAuthenticated,authController.signOut);
+authRouter.post('/refresh-token',authController.generateNewToken);
 
 export default authRouter;
