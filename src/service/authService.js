@@ -2,9 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 
 import configs from '../configs/serverConfig.js';
+import sendMail from '../utils/common/mailer.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
 import UserService from './userService.js';
+import { registrationSuccessTemplate } from '../utils/common/mailTemplates.js';
 
 const userService = new UserService();
 
@@ -26,6 +28,9 @@ class AuthService {
       refreshToken
     });
 
+    const {subject,text,html}= registrationSuccessTemplate(user.username);
+    await sendMail(user.email, subject,text,html);
+
     return {
       user: updatedUser,
       accessToken,
@@ -42,8 +47,6 @@ class AuthService {
         'User not found'
       );
     }
-
-    console.log(user);
 
     const isPasswordValid = await userService.comparePassword(data.password, user.password);
     if(!isPasswordValid){
