@@ -18,7 +18,8 @@ export const signUpService = async (data) => {
   const accessToken = await generateAccessTokenService({
     id: user._id,
     email: user.email,
-    username: user.username
+    username: user.username,
+    role: user.role
   });
 
   // Generating refresh token
@@ -39,7 +40,7 @@ export const signUpService = async (data) => {
 };
 
 export const loginService = async (data) => {
-  const user = await getUserByEmailOrUsernameService(data.identifier);
+  const user = await getUserByEmailOrUsernameService(data.identifier,'-__v -refreshToken');
   if (!user) {
     throw new CustomError(
       StatusCodes.NOT_FOUND,
@@ -63,7 +64,8 @@ export const loginService = async (data) => {
   const accessToken = await generateAccessTokenService({
     id: user._id,
     email: user.email,
-    username: user.username
+    username: user.username,
+    role: user.role
   });
   const refreshToken = await generateRefreshTokenService({ id: user._id });
   const updatedUser = await updateUserService(user._id, {

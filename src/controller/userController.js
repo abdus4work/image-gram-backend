@@ -1,6 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { getUserByEmailOrUsernameService } from '../service/userService.js';
+import {
+  deleteUserService,
+  getUserByEmailOrUsernameService
+} from '../service/userService.js';
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
@@ -19,22 +22,50 @@ export const getUser = async (req, res, next) => {
         }
       );
     }
-    const user = await getUserByEmailOrUsernameService(username);
+    const user = await getUserByEmailOrUsernameService(username, '-password -__v -refreshToken');
 
     return res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'success', {
-        user: {
-          id: user._id,
-          fullName: user.fullName,
-          username: user.username,
-          email: user.email,
-          avatar: user.avatar,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
-        }
+        user: user
       }).sendResponse()
     );
   } catch (error) {
     next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const username = req.params.username;
+    if (!user || user.username !== username) {
+      throw new CustomError(
+        StatusCodes.UNAUTHORIZED,
+        ErrorCodes.UNAUTHORIZED,
+        'Unauthorized to delete user',
+        {},
+        {
+          inputData: username
+        }
+      );
+    }
+
+
+    const deletedUser = await deleteUserService(user.id);
+    return res.status(StatusCodes.OK).json(
+      new SuccessResponse(StatusCodes.OK, 'User deleted successfully', {
+        user: {
+          id: deletedUser._id,
+          fullName: deletedUser.fullName,
+          username: deletedUser.username,
+          email: deletedUser.email,
+          avatar: deletedUser.avatar,
+          createdAt: deletedUser.createdAt,
+          updatedAt: deletedUser.updatedAt
+        }
+      }).sendResponse()
+    );
+  } catch (err) {
+    next(err);
   }
 };

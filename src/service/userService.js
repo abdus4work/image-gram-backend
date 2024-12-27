@@ -39,8 +39,21 @@ export const updateUserService = async (id, data) => {
   return user;
 };
 
-export const getUserByEmailOrUsernameService = async (identifier) => {
-  const user = await userRepository.getByEmailOrUsername(identifier, '-__v');
+export const deleteUserService = async (id)=>{
+  const user = await userRepository.delete(id);
+  if (!user) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      ErrorCodes.USER_NOT_FOUND,
+      'User not found',
+      { inputData: id }
+    );
+  }
+  return user;
+}
+
+export const getUserByEmailOrUsernameService = async (identifier,selectOption='-password -__v -refreshToken') => {
+  const user = await userRepository.getByEmailOrUsername(identifier, selectOption);
   if (!user) {
     throw new CustomError(
       StatusCodes.BAD_REQUEST,
