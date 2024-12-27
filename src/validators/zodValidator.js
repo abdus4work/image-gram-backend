@@ -30,7 +30,7 @@ export const validate = (schema) => {
             err.errors[0].path + ' is too small',
             { inputData: req.body }
           )
-        )
+        );
       }
 
       next(
@@ -39,7 +39,7 @@ export const validate = (schema) => {
           err.errors[0].code,
           err.errors[0].message
         )
-      )
+      );
     }
   };
 };

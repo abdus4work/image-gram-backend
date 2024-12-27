@@ -1,128 +1,144 @@
+import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 
 import configs from '../configs/serverConfig.js';
-import sendMail from '../utils/common/mailer.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
-import UserService from './userService.js';
-import { registrationSuccessTemplate } from '../utils/common/mailTemplates.js';
+import {
+  createUserService,
+  getUserByEmailOrUsernameService,
+  getUserByIdService,
+  updateUserService
+} from './userService.js';
 
-const userService = new UserService();
+export const signUpService = async (data) => {
+  const user = await createUserService(data);
+  // Generating access token
+  const accessToken = await generateAccessTokenService({
+    id: user._id,
+    email: user.email,
+    username: user.username
+  });
 
-class AuthService {
-  async signup(data) {
-    const user = await userService.createUser(data);
-    // Generating access token
-    const accessToken = this.generateAccessToken({
-      id: user._id,
-      email: user.email,
-      username: user.username
-    });
+  // Generating refresh token
+  const refreshToken = await generateRefreshTokenService({ id: user._id });
 
-    // Generating refresh token
-    const refreshToken = this.generateRefreshToken({ id: user._id });
+  // Updating user with refresh token
+  const updatedUser = await updateUserService(user._id, {
+    refreshToken
+  });
 
-    // Updating user with refresh token
-    const updatedUser = await userService.updateUser(user._id, {
-      refreshToken
-    });
+  // TODO: implement sending email
 
-    const {subject,text,html}= registrationSuccessTemplate(user.username);
-    await sendMail(user.email, subject,text,html);
+  return {
+    user: updatedUser,
+    accessToken,
+    refreshToken
+  };
+};
 
-    return {
-      user: updatedUser,
-      accessToken,
-      refreshToken
-    };
+export const loginService = async (data) => {
+  const user = await getUserByEmailOrUsernameService(data.identifier);
+  if (!user) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      ErrorCodes.USER_NOT_FOUND,
+      'User not found'
+    );
   }
 
-  async signIn(data){
-    const user = await userService.getByEmailOrUsername(data.identifier);
-    if(!user){
-      throw new CustomError(
-        StatusCodes.NOT_FOUND,
-        ErrorCodes.USER_NOT_FOUND,
-        'User not found'
-      );
-    }
-
-    const isPasswordValid = await userService.comparePassword(data.password, user.password);
-    if(!isPasswordValid){
-      throw new CustomError(
-        StatusCodes.UNAUTHORIZED,
-        ErrorCodes.UNAUTHORIZED,
-        'Invalid password'
-      );
-    }
-
-    const accessToken = this.generateAccessToken({id: user._id, email: user.email, username: user.username});
-    const refreshToken = this.generateRefreshToken({id: user._id});
-    await userService.updateUser(user._id, {refreshToken});
-    return {
-      user,
-      accessToken,
-      refreshToken
-    }
+  const isPasswordValid = await comparePasswordService(
+    data.password,
+    user.password
+  );
+  if (!isPasswordValid) {
+    throw new CustomError(
+      StatusCodes.UNAUTHORIZED,
+      ErrorCodes.UNAUTHORIZED,
+      'Invalid password'
+    );
   }
 
-  async signOut(refreshToken){
-    const {id} = this.verifyToken(refreshToken,configs.JWT_REFRESH_SECRET)
-    const user = await userService.getUserById(id);
-    if(user.refreshToken !== refreshToken){
-      throw new CustomError(
-        StatusCodes.UNAUTHORIZED,
-        ErrorCodes.UNAUTHORIZED,
-        'Invalid token'
-      )
-    }
-    await userService.updateUser(user._id, {refreshToken: ''});
+  const accessToken = await generateAccessTokenService({
+    id: user._id,
+    email: user.email,
+    username: user.username
+  });
+  const refreshToken = await generateRefreshTokenService({ id: user._id });
+  const updatedUser = await updateUserService(user._id, {
+    refreshToken
+  });
+  return {
+    updatedUser,
+    accessToken,
+    refreshToken
+  };
+};
+
+export const logoutService = async (refreshToken) => {
+  const { id } = await verifyTokenService(
+    refreshToken,
+    configs.JWT_REFRESH_SECRET
+  );
+  const user = await getUserByIdService(id);
+  if (user.refreshToken !== refreshToken) {
+    throw new CustomError(
+      StatusCodes.UNAUTHORIZED,
+      ErrorCodes.UNAUTHORIZED,
+      'Invalid token'
+    );
+  }
+  await updateUserService(user._id, { refreshToken: '' });
+};
+
+export const generateNewAccessTokenService = async (refreshToken) => {
+  const { id } = await verifyTokenService(
+    refreshToken,
+    configs.JWT_REFRESH_SECRET
+  );
+  const user = await getUserByIdService(id);
+  if (user.refreshToken !== refreshToken) {
+    throw new CustomError(
+      StatusCodes.UNAUTHORIZED,
+      ErrorCodes.UNAUTHORIZED,
+      'Invalid token'
+    );
   }
 
-  generateAccessToken(payload) {
-    return jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
-      expiresIn: configs.JWT_ACCESS_EXPIRY
-    });
-  }
+  const accessToken = await generateAccessTokenService({
+    id: user._id,
+    email: user.email,
+    username: user.username
+  });
 
-  generateRefreshToken(payload) {
-    return jwt.sign(payload, configs.JWT_REFRESH_SECRET, {
-      expiresIn: configs.JWT_REFRESH_EXPIRY
-    });
-  }
+  const newRefreshToken = await generateRefreshTokenService({ id: user._id });
+  await updateUserService(user._id, {
+    refreshToken: newRefreshToken
+  });
 
-  verifyToken(token, secret) {
-    return jwt.verify(token, secret);
-  }
+  return {
+    accessToken,
+    refreshToken: newRefreshToken
+  };
+};
 
-  async generateNewAccessToken(refreshToken) {
-    const { id } = this.verifyToken(refreshToken, configs.JWT_REFRESH_SECRET);
-    const user = await userService.getUserById(id);
-    if (user.refreshToken !== refreshToken) {
-      throw new CustomError(
-        StatusCodes.UNAUTHORIZED,
-        ErrorCodes.UNAUTHORIZED,
-        'Invalid token'
-      );
-    }
+export const generateAccessTokenService = async (payload) => {
+  return jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
+    expiresIn: configs.JWT_ACCESS_EXPIRY
+  });
+};
 
-    const accessToken = this.generateAccessToken({
-      id: user._id,
-      email: user.email,
-      username: user.username
-    });
+export const generateRefreshTokenService = async (payload) => {
+  return jwt.sign(payload, configs.JWT_REFRESH_SECRET, {
+    expiresIn: configs.JWT_REFRESH_EXPIRY
+  });
+};
 
-    const newRefreshToken = this.generateRefreshToken({ id: user._id });
-    await userService.updateUser(user._id, {
-      refreshToken: newRefreshToken
-    });
+export const verifyTokenService = async (token, secret) => {
+  return jwt.verify(token, secret);
+};
 
-    return {
-      accessToken,
-      refreshToken: newRefreshToken
-    }
-  }
-}
-
-export default AuthService;
+export const comparePasswordService = async (password, hashedPassword) => {
+  return bcrypt.compare(password, hashedPassword);
+};

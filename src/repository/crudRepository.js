@@ -1,66 +1,131 @@
-class CrudRepository {
-  constructor(model) {
-    this.model = model;
-  }
+const crudRepository = (model) => {
+  return {
+    async create(data) {
+      return model.create(data);
+    },
 
-  async create(data) {
-    return this.model.create(data);
-  }
-
-  async getAll(populateOptions = null, selectOptions = null) {
-    const query = this.model.find();
-    if (populateOptions) {
-      if (Array.isArray(populateOptions)) {
-        populateOptions.forEach((option) => {
-          query.populate(option);
-        });
-      } else {
-        query.populate(populateOptions);
+    async getAll(populateOptions = null, selectOptions = null) {
+      const query = model.find();
+      if (populateOptions) {
+        if (Array.isArray(populateOptions)) {
+          populateOptions.forEach((option) => {
+            query.populate(option);
+          });
+        } else {
+          query.populate(populateOptions);
+        }
       }
-    }
-    if (selectOptions) {
-      query.select(selectOptions);
-    }
-    return await query;
-  }
-
-  async getById(id, populateOptions = null, selectOptions = null) {
-    const query = this.model.findById(id);
-    if (populateOptions) {
-      if (Array.isArray(populateOptions)) {
-        populateOptions.forEach((option) => {
-          query.populate(option);
-        });
-      } else {
-        query.populate(populateOptions);
+      if (selectOptions) {
+        query.select(selectOptions);
       }
-    }
-    if (selectOptions) {
-      query.select(selectOptions);
-    }
-    return await query;
-  }
+      return await query;
+    },
 
-  async update(id, data, populateOptions = null, selectOptions = null) {
-    const query = this.model.findByIdAndUpdate(id, data, { new: true });
-    if (populateOptions) {
-      if (Array.isArray(populateOptions)) {
-        populateOptions.forEach((option) => {
-          query.populate(option);
-        });
-      } else {
-        query.populate(populateOptions);
+    async getById(id, populateOptions = null, selectOptions = null) {
+      const query = model.findById(id);
+      if (populateOptions) {
+        if (Array.isArray(populateOptions)) {
+          populateOptions.forEach((option) => {
+            query.populate(option);
+          });
+        } else {
+          query.populate(populateOptions);
+        }
       }
-    }
-    if (selectOptions) {
-      query.select(selectOptions);
-    }
-    return await query;
-  }
+      if (selectOptions) {
+        query.select(selectOptions);
+      }
+      return await query;
+    },
 
-  async delete(id) {
-    return await this.model.findByIdAndDelete(id);
-  }
-}
+    async update(id, data, populateOptions = null, selectOptions = null) {
+      const query = model.findByIdAndUpdate(id, data, { new: true });
+      if (populateOptions) {
+        if (Array.isArray(populateOptions)) {
+          populateOptions.forEach((option) => {
+            query.populate(option);
+          });
+        } else {
+          query.populate(populateOptions);
+        }
+      }
+      if (selectOptions) {
+        query.select(selectOptions);
+      }
+      return await query;
+    },
 
-export default CrudRepository;
+    async delete(id) {
+      return model.findByIdAndDelete(id);
+    }
+  };
+};
+
+export default crudRepository;
+
+// class CrudRepository {
+//   constructor(model) {
+//     this.model = model;
+//   }
+//
+//   async create(data) {
+//     return this.model.create(data);
+//   }
+//
+//   async getAll(populateOptions = null, selectOptions = null) {
+//     const query = this.model.find();
+//     if (populateOptions) {
+//       if (Array.isArray(populateOptions)) {
+//         populateOptions.forEach((option) => {
+//           query.populate(option);
+//         });
+//       } else {
+//         query.populate(populateOptions);
+//       }
+//     }
+//     if (selectOptions) {
+//       query.select(selectOptions);
+//     }
+//     return await query;
+//   }
+//
+//   async getById(id, populateOptions = null, selectOptions = null) {
+//     const query = this.model.findById(id);
+//     if (populateOptions) {
+//       if (Array.isArray(populateOptions)) {
+//         populateOptions.forEach((option) => {
+//           query.populate(option);
+//         });
+//       } else {
+//         query.populate(populateOptions);
+//       }
+//     }
+//     if (selectOptions) {
+//       query.select(selectOptions);
+//     }
+//     return await query;
+//   }
+//
+//   async update(id, data, populateOptions = null, selectOptions = null) {
+//     const query = this.model.findByIdAndUpdate(id, data, { new: true });
+//     if (populateOptions) {
+//       if (Array.isArray(populateOptions)) {
+//         populateOptions.forEach((option) => {
+//           query.populate(option);
+//         });
+//       } else {
+//         query.populate(populateOptions);
+//       }
+//     }
+//     if (selectOptions) {
+//       query.select(selectOptions);
+//     }
+//     return await query;
+//   }
+//
+//   async delete(id) {
+//     return await this.model.findByIdAndDelete(id);
+//   }
+// }
+//
+// export default CrudRepository;

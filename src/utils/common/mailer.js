@@ -8,9 +8,8 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: configs.EMAIL_USER,
     pass: configs.EMAIL_PASS
-  },
+  }
 });
-
 
 const sendMail = async (to, subject, text, html) => {
   try {
@@ -19,7 +18,7 @@ const sendMail = async (to, subject, text, html) => {
       to,
       subject,
       text,
-      ...(html && { html }),
+      ...(html && { html })
     };
 
     const info = await transporter.sendMail(mailOptions);

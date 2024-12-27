@@ -1,76 +1,65 @@
-import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 
-import UserRepository from '../repository/userRepository.js';
+import userRepository from '../repository/userRepository.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
 
-const userRepository = new UserRepository();
-
-class UserService {
-  async createUser(data) {
-    try {
-      return await userRepository.create(data);
-    } catch (err) {
-      if (err.code === 11000) {
-        throw new CustomError(
-          StatusCodes.CONFLICT,
-          ErrorCodes.DUPLICATE_KEY,
-          'User with this email or username already exists',
-          err.message,
-          { inputData: data }
-        );
-      }
-      throw err;
-    }
-  }
-
-  async updateUser(id, data) {
-    const user = await userRepository.update(
-      id,
-      data,
-      null,
-      '-password -__v -refreshToken'
-    );
-    if (!user) {
+export const createUserService = async (data) => {
+  try {
+    return await userRepository.create(data);
+  } catch (err) {
+    if (err.code === 11000) {
       throw new CustomError(
-        StatusCodes.NOT_FOUND,
-        ErrorCodes.USER_NOT_FOUND,
-        'User not found',
+        StatusCodes.CONFLICT,
+        ErrorCodes.DUPLICATE_KEY,
+        'User with this email or username already exists',
+        err.message,
         { inputData: data }
       );
     }
-    return user;
+    throw err;
+  }
+};
+
+export const updateUserService = async (id, data) => {
+  const user = await userRepository.update(
+    id,
+    data,
+    null,
+    '-password -__v -refreshToken'
+  );
+  if (!user) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      ErrorCodes.USER_NOT_FOUND,
+      'User not found',
+      { inputData: data }
+    );
+  }
+  return user;
+};
+
+export const getUserByEmailOrUsernameService = async (identifier) => {
+  const user = await userRepository.getByEmailOrUsername(identifier, '-__v');
+  if (!user) {
+    throw new CustomError(
+      StatusCodes.BAD_REQUEST,
+      ErrorCodes.USER_NOT_FOUND,
+      `user not found with this ${identifier} identifier`
+    );
   }
 
-  async getByEmailOrUsername(identifier) {
-    const user = await userRepository.getByEmailOrUsername(identifier,'-__v');
-    if (!user) {
-      throw new CustomError(
-        StatusCodes.BAD_REQUEST,
-        ErrorCodes.USER_NOT_FOUND,
-        `user not found with this ${identifier} identifier`
-      );
-    }
+  return user;
+};
 
-    return user;
+export const getUserByIdService = async (id) => {
+  const user = await userRepository.getById(id);
+  if (!user) {
+    throw new CustomError(
+      StatusCodes.BAD_REQUEST,
+      ErrorCodes.USER_NOT_FOUND,
+      `user not found with this ${id} identifier`
+    );
   }
-
-  async getUserById(id) {
-    const user = await userRepository.getById(id);
-    if (!user) {
-      throw new CustomError(
-        StatusCodes.BAD_REQUEST,
-        ErrorCodes.USER_NOT_FOUND,
-        `user not found with this ${id} identifier`
-      );
-    }
-    return user;
-  }
-
-  async comparePassword(password, hashedPassword) {
-    return await bcrypt.compare(password, hashedPassword);
-  }
-}
-
-export default UserService;
+  return user;
+};

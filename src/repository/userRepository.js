@@ -1,19 +1,16 @@
 import userModel from '../models/userModel.js';
-import CrudRepository from './crudRepository.js';
+import crudRepository from './crudRepository.js';
 
-class UserRepository extends CrudRepository {
-  constructor() {
-    super(userModel);
-  }
-
+const userRepository = {
+  ...crudRepository(userModel),
   async getByEmailOrUsername(
     identifier,
     selectOption = '-password -__v -refreshToken'
   ) {
-    return this.model
+    return userModel
       .findOne({ $or: [{ email: identifier }, { username: identifier }] })
       .select(selectOption);
   }
-}
+};
 
-export default UserRepository;
+export default userRepository;

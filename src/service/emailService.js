@@ -1,7 +1,8 @@
-const registrationSuccessTemplate = (username) => {
-  return {
-    subject: 'Welcome to ImageGram!',
-    text: `Hi ${username},
+import sendMail from '../utils/common/mailer.js';
+
+export const sendWelcomeEmail = async (user) => {
+  const subject = 'Welcome to ImageGram!';
+  const text = `Hi ${user.username},
 
 Thank you for registering with ImageGram. We're excited to have you on board!
 
@@ -9,8 +10,8 @@ If you have any questions or need support, feel free to reach out to us.
 
 Best regards,
 The [Your App Name] Team
-`,
-    html: `
+`;
+  const html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -55,7 +56,7 @@ The [Your App Name] Team
             <img src="https://your-logo-url.com/logo.png" alt="[Your App Name] Logo">
           </div>
           <div class="content">
-            <p>Hi <strong>${username}</strong>,</p>
+            <p>Hi <strong>${user.username}</strong>,</p>
             <p>Thank you for registering with <strong>ImageGram</strong>. We're excited to have you on board!</p>
             <p>If you have any questions or need support, feel free to reach out to us.</p>
             <p>Best regards,<br>The ImageGram Team</p>
@@ -66,10 +67,7 @@ The [Your App Name] Team
         </div>
       </body>
       </html>
-    `,
-  };
-};
+    `;
 
-export {
-  registrationSuccessTemplate
-}
+  await sendMail(user.email, subject, text, html);
+};
