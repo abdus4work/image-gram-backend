@@ -4,8 +4,10 @@ const crudRepository = (model) => {
       return model.create(data);
     },
 
-    async getAll(populateOptions = null, selectOptions = null) {
+    async getAll(populateOptions = null, selectOptions = null, page = 1, limit = 10) {
       const query = model.find();
+
+      // Handle population
       if (populateOptions) {
         if (Array.isArray(populateOptions)) {
           populateOptions.forEach((option) => {
@@ -15,9 +17,15 @@ const crudRepository = (model) => {
           query.populate(populateOptions);
         }
       }
+
+      // Handle field selection
       if (selectOptions) {
         query.select(selectOptions);
       }
+
+      // Handle pagination
+      const skip = (page - 1) * limit;
+      query.skip(skip).limit(limit);
       return await query;
     },
 

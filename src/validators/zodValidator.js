@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { deleteImage } from '../utils/common/cloudinary.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
 
@@ -9,6 +10,14 @@ export const validate = (schema) => {
       req.body = await schema.parseAsync(req.body);
       next();
     } catch (err) {
+      if (req.file) {
+        const { result } = await deleteImage(req.file.filename);
+        if (result === 'ok') {
+          console.log('Image deleted successfully');
+        } else {
+          console.log('Error deleting image');
+        }
+      }
       if (err.errors?.[0].code === 'invalid_type') {
         next(
           new CustomError(
