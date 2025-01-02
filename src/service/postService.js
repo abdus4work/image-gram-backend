@@ -1,6 +1,10 @@
+import { StatusCodes } from 'http-status-codes';
+
 import cloudinaryConfig from '../configs/cloudinaryConfig.js';
 import configs from '../configs/serverConfig.js';
 import postRepository from '../repository/postRepository.js';
+import CustomError from '../utils/error/customError.js';
+import ErrorCodes from '../utils/error/errorCodes.js';
 
 
 export const createPostService = async (data)=>{
@@ -8,11 +12,42 @@ export const createPostService = async (data)=>{
 }
 
 export const getAllPostsService = async (page,limit)=>{
-  const posts = await postRepository.getAll('user',null,page,limit);
+  const posts = await postRepository.getAll('user','-__v',page,limit);
   const totalPosts = await postRepository.countAllPosts();
   const totalPages = Math.ceil(totalPosts/limit);
   const meta = {totalPosts,totalPages,page,limit};
   return {data:posts,meta};
+}
+
+export const getAllPostsByUserService = async (userId,page,limit,sortOption={updatedAt:-1})=>{
+  const posts = await postRepository.getAllPostsByUserId(userId,page,limit,sortOption);
+  const totalPosts = await postRepository.countAllPosts({user:userId});
+  const totalPages = Math.ceil(totalPosts/limit);
+  const meta = {totalPosts,totalPages,page,limit};
+  return {data:posts,meta};
+}
+
+export const getPostByIdService = async (postId)=>{
+  return await postRepository.getById(postId);
+}
+
+export const deletePostService = async (postId,userId)=>{
+  const post = await postRepository.getById(postId);
+  if(!post){
+    return null;
+  }
+  if(post.user.toString()!==userId){
+    throw new CustomError(
+      StatusCodes.UNAUTHORIZED,
+      ErrorCodes.UNAUTHORIZED,
+      'Unauthorized to delete post',
+      {},
+      {
+        inputData: {postId,userId}
+      }
+    );
+  }
+  return await postRepository.delete(postId);
 }
 
 export const generateSignedUrlService = async ()=>{

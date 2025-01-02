@@ -4,7 +4,7 @@ const crudRepository = (model) => {
       return model.create(data);
     },
 
-    async getAll(populateOptions = null, selectOptions = null, page = 1, limit = 10) {
+    async getAll(populateOptions = null, selectOptions = null, page = 1, limit = 10,sortOption={updatedAt:-1}) {
       const query = model.find();
 
       // Handle population
@@ -22,6 +22,9 @@ const crudRepository = (model) => {
       if (selectOptions) {
         query.select(selectOptions);
       }
+
+      // Handle sorting
+      query.sort(sortOption);
 
       // Handle pagination
       const skip = (page - 1) * limit;
