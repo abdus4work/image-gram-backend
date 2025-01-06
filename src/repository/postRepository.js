@@ -12,7 +12,7 @@ const postRepository = {
     const query = postModel.find({ user: { $in: userIds } });
 
     // Handle population of user, comments, and likes
-    query.populate('user');
+    query.populate('user', 'fullName username avatar');
 
     // Handle sorting
     query.sort(sortOption);

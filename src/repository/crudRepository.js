@@ -4,8 +4,15 @@ const crudRepository = (model) => {
       return model.create(data);
     },
 
-    async getAll(populateOptions = null, selectOptions = null, page = 1, limit = 10,sortOption={updatedAt:-1}) {
-      const query = model.find();
+    async getAll(
+      filter = {},
+      populateOptions = null,
+      selectOptions = null,
+      page = 1,
+      limit = 10,
+      sortOption = { createdAt: -1 }
+    ) {
+      const query = model.find(filter);
 
       // Handle population
       if (populateOptions) {
