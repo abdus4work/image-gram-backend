@@ -1,7 +1,7 @@
 import ErrorCodes from '../utils/error/errorCodes.js';
 import { StatusCodes } from 'http-status-codes';
 import CustomError from '../utils/error/customError.js';
-import { createLikeService } from '../service/likeService.js';
+import { createLikeService, deleteLikeService } from '../service/likeService.js';
 import SuccessResponse from '../utils/common/successResponse.js';
 
 
@@ -36,6 +36,36 @@ export const createLike = async (req,res,next) =>{
       ).sendResponse()
     )
 
+  }catch (err){
+    next(err);
+  }
+}
+
+export const deleteLike = async (req, res, next) =>{
+  try{
+    const id = req.params.likeId;
+    const userId = req.user.id;
+    if (!id) {
+      throw new CustomError(
+        StatusCodes.BAD_REQUEST,
+        ErrorCodes.INVALID_INPUT,
+        'Like id is required',
+        {},
+        {
+          inputData: req.params
+        }
+      );
+    }
+    const like = await deleteLikeService(id, userId);
+    res.status(StatusCodes.OK).json(
+      new SuccessResponse(
+        StatusCodes.OK,
+        'Like deleted successfully',
+        {
+          like: like
+        }
+      ).sendResponse()
+    )
   }catch (err){
     next(err);
   }

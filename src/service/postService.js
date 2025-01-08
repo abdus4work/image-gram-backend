@@ -73,6 +73,9 @@ export const deletePostService = async (postId, userId) => {
       }
     );
   }
+  // TODO: Delete post image from cloudinary
+  // TODO: delete all comments and likes of the post
+
   return await postRepository.delete(postId);
 };
 
