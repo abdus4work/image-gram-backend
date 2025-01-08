@@ -53,10 +53,10 @@ export const deleteCommentService = async (id, userId) => {
   }
 
   await commentRepository.delete(id);
-}
+};
 
-export const updateCommentService = async (id,data)=>{
-  const comment = await commentRepository.update(id,data);
+export const updateCommentService = async (id, data) => {
+  const comment = await commentRepository.update(id, data);
   if (!comment) {
     throw new CustomError(
       StatusCodes.NOT_FOUND,
@@ -67,9 +67,9 @@ export const updateCommentService = async (id,data)=>{
     );
   }
   return comment;
-}
+};
 
-export const getCommentByIdService = async (id)=>{
+export const getCommentByIdService = async (id) => {
   const comment = await commentRepository.getById(id);
   if (!comment) {
     throw new CustomError(
@@ -81,9 +81,9 @@ export const getCommentByIdService = async (id)=>{
     );
   }
   return comment;
-}
+};
 
-const addCommentToCommentable = async (comment,commentable) => {
+const addCommentToCommentable = async (comment, commentable) => {
   if (comment.onModel === 'Post') {
     commentable.comments.push(comment._id);
   } else if (comment.onModel === 'Comment') {
@@ -98,4 +98,4 @@ export const fetchCommentable = async (onModel, commentableId) => {
   } else if (onModel === 'Comment') {
     return await getCommentByIdService(commentableId);
   }
-}
+};

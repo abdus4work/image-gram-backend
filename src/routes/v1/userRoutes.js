@@ -1,6 +1,10 @@
 import express from 'express';
 
-import { deleteUser, getUser, getUserPosts } from '../../controller/userController.js';
+import {
+  deleteUser,
+  getUser,
+  getUserPosts
+} from '../../controller/userController.js';
 import { isAuthenticated } from '../../middleware/authMiddleware.js';
 
 const userRouter = express.Router();

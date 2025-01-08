@@ -40,7 +40,10 @@ export const signUpService = async (data) => {
 };
 
 export const loginService = async (data) => {
-  const user = await getUserByEmailOrUsernameService(data.identifier,'-__v -refreshToken');
+  const user = await getUserByEmailOrUsernameService(
+    data.identifier,
+    '-__v -refreshToken'
+  );
   if (!user) {
     throw new CustomError(
       StatusCodes.NOT_FOUND,

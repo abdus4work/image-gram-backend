@@ -1,31 +1,30 @@
-import { createCommentService, deleteCommentService } from '../service/commentService.js';
 import { StatusCodes } from 'http-status-codes';
+
+import {
+  createCommentService,
+  deleteCommentService
+} from '../service/commentService.js';
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
 
-
-export const createComment= async (req, res, next) =>{
-  try{
+export const createComment = async (req, res, next) => {
+  try {
     const data = req.body;
     const user = req.user.id;
-    const comment = await createCommentService({...data, user});
+    const comment = await createCommentService({ ...data, user });
     res.status(StatusCodes.CREATED).json(
-      new SuccessResponse(
-        StatusCodes.CREATED,
-        'Comment created successfully',
-        {
-          comment: comment
-        }
-      ).sendResponse()
-    )
-  }catch (err){
+      new SuccessResponse(StatusCodes.CREATED, 'Comment created successfully', {
+        comment: comment
+      }).sendResponse()
+    );
+  } catch (err) {
     next(err);
   }
-}
+};
 
-export const deleteComment = async (req, res, next) =>{
-  try{
+export const deleteComment = async (req, res, next) => {
+  try {
     const id = req.params.commentId;
     const userId = req.user.id;
     if (!id) {
@@ -41,16 +40,11 @@ export const deleteComment = async (req, res, next) =>{
     }
     const comment = await deleteCommentService(id, userId);
     res.status(StatusCodes.OK).json(
-      new SuccessResponse(
-        StatusCodes.OK,
-        'Comment deleted successfully',
-        {
-          comment: comment
-        }
-      ).sendResponse()
-    )
-  }
-  catch (err){
+      new SuccessResponse(StatusCodes.OK, 'Comment deleted successfully', {
+        comment: comment
+      }).sendResponse()
+    );
+  } catch (err) {
     next(err);
   }
-}
+};

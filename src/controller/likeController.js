@@ -1,15 +1,18 @@
-import ErrorCodes from '../utils/error/errorCodes.js';
 import { StatusCodes } from 'http-status-codes';
-import CustomError from '../utils/error/customError.js';
-import { createLikeService, deleteLikeService } from '../service/likeService.js';
+
+import {
+  createLikeService,
+  deleteLikeService
+} from '../service/likeService.js';
 import SuccessResponse from '../utils/common/successResponse.js';
+import CustomError from '../utils/error/customError.js';
+import ErrorCodes from '../utils/error/errorCodes.js';
 
-
-export const createLike = async (req,res,next) =>{
-  try{
-    const {onModel, likeableId} = req.body;
+export const createLike = async (req, res, next) => {
+  try {
+    const { onModel, likeableId } = req.body;
     const user = req.user.id;
-    if(!onModel || !likeableId){
+    if (!onModel || !likeableId) {
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
         ErrorCodes.INVALID_INPUT,
@@ -24,25 +27,20 @@ export const createLike = async (req,res,next) =>{
       user,
       onModel,
       likeableId
-    }
+    };
     const like = await createLikeService(data);
     res.status(StatusCodes.CREATED).json(
-      new SuccessResponse(
-        StatusCodes.CREATED,
-        'Like created successfully',
-        {
-          like: like
-        }
-      ).sendResponse()
-    )
-
-  }catch (err){
+      new SuccessResponse(StatusCodes.CREATED, 'Like created successfully', {
+        like: like
+      }).sendResponse()
+    );
+  } catch (err) {
     next(err);
   }
-}
+};
 
-export const deleteLike = async (req, res, next) =>{
-  try{
+export const deleteLike = async (req, res, next) => {
+  try {
     const id = req.params.likeId;
     const userId = req.user.id;
     if (!id) {
@@ -58,15 +56,11 @@ export const deleteLike = async (req, res, next) =>{
     }
     const like = await deleteLikeService(id, userId);
     res.status(StatusCodes.OK).json(
-      new SuccessResponse(
-        StatusCodes.OK,
-        'Like deleted successfully',
-        {
-          like: like
-        }
-      ).sendResponse()
-    )
-  }catch (err){
+      new SuccessResponse(StatusCodes.OK, 'Like deleted successfully', {
+        like: like
+      }).sendResponse()
+    );
+  } catch (err) {
     next(err);
   }
-}
+};

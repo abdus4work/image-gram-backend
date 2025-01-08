@@ -1,9 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 
 import {
-  createPostService, deletePostService,
+  createPostService,
+  deletePostService,
   generateSignedUrlService,
-  getAllPostsService, getPostByIdService
+  getAllPostsService,
+  getPostByIdService
 } from '../service/postService.js';
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
@@ -31,7 +33,7 @@ export const getAllPosts = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const { data,meta } = await getAllPostsService(page, limit);
+    const { data, meta } = await getAllPostsService(page, limit);
     return res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'success', {
         posts: data,
@@ -44,10 +46,10 @@ export const getAllPosts = async (req, res, next) => {
 };
 
 export const getPost = async (req, res, next) => {
-  try{
+  try {
     const postId = req.params.postId;
     const post = await getPostByIdService(postId);
-    if(!post){
+    if (!post) {
       throw new CustomError(
         StatusCodes.NOT_FOUND,
         ErrorCodes.RESOURCE_NOT_FOUND,
@@ -63,16 +65,16 @@ export const getPost = async (req, res, next) => {
         post: post
       }).sendResponse()
     );
-  }catch (err) {
+  } catch (err) {
     next(err);
   }
-}
+};
 
-export const deletePost= async (req, res, next) =>{
-  try{
+export const deletePost = async (req, res, next) => {
+  try {
     const postId = req.params.postId;
     const post = await deletePostService(postId, req.user.id);
-    if(!post){
+    if (!post) {
       throw new CustomError(
         StatusCodes.NOT_FOUND,
         ErrorCodes.RESOURCE_NOT_FOUND,
@@ -88,11 +90,10 @@ export const deletePost= async (req, res, next) =>{
         post: post
       }).sendResponse()
     );
-  }
-  catch(err){
+  } catch (err) {
     next(err);
   }
-}
+};
 
 export const generateSignedUrl = async (req, res, next) => {
   try {

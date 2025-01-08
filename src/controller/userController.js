@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { getAllPostsByUserService } from '../service/postService.js';
 import {
   deleteUserService,
   getUserByEmailOrUsernameService
@@ -7,7 +8,6 @@ import {
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
-import { getAllPostsByUserService } from '../service/postService.js';
 
 export const getUser = async (req, res, next) => {
   try {
@@ -23,7 +23,10 @@ export const getUser = async (req, res, next) => {
         }
       );
     }
-    const user = await getUserByEmailOrUsernameService(username, '-password -__v -refreshToken');
+    const user = await getUserByEmailOrUsernameService(
+      username,
+      '-password -__v -refreshToken'
+    );
 
     return res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'success', {
@@ -51,7 +54,6 @@ export const deleteUser = async (req, res, next) => {
       );
     }
 
-
     const deletedUser = await deleteUserService(user.id);
     return res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'User deleted successfully', {
@@ -71,8 +73,8 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-export const getUserPosts = async (req, res,next)=>{
-  try{
+export const getUserPosts = async (req, res, next) => {
+  try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const username = req.params.username;
@@ -88,8 +90,11 @@ export const getUserPosts = async (req, res,next)=>{
       );
     }
 
-    const user = await getUserByEmailOrUsernameService(username, '-password -__v -refreshToken');
-    if(!user._id){
+    const user = await getUserByEmailOrUsernameService(
+      username,
+      '-password -__v -refreshToken'
+    );
+    if (!user._id) {
       throw new CustomError(
         StatusCodes.UNAUTHORIZED,
         ErrorCodes.UNAUTHORIZED,
@@ -101,14 +106,19 @@ export const getUserPosts = async (req, res,next)=>{
       );
     }
 
-    const {data,meta} =await getAllPostsByUserService(user._id,page,limit,{updatedAt: -1});
+    const { data, meta } = await getAllPostsByUserService(
+      user._id,
+      page,
+      limit,
+      { updatedAt: -1 }
+    );
     return res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'success', {
         posts: data,
         meta
       }).sendResponse()
     );
-  }catch (error){
+  } catch (error) {
     next(error);
   }
-}
+};

@@ -39,7 +39,7 @@ export const updateUserService = async (id, data) => {
   return user;
 };
 
-export const deleteUserService = async (id)=>{
+export const deleteUserService = async (id) => {
   const user = await userRepository.delete(id);
   if (!user) {
     throw new CustomError(
@@ -50,10 +50,16 @@ export const deleteUserService = async (id)=>{
     );
   }
   return user;
-}
+};
 
-export const getUserByEmailOrUsernameService = async (identifier,selectOption='-password -__v -refreshToken') => {
-  const user = await userRepository.getByEmailOrUsername(identifier, selectOption);
+export const getUserByEmailOrUsernameService = async (
+  identifier,
+  selectOption = '-password -__v -refreshToken'
+) => {
+  const user = await userRepository.getByEmailOrUsername(
+    identifier,
+    selectOption
+  );
   if (!user) {
     throw new CustomError(
       StatusCodes.BAD_REQUEST,
@@ -76,5 +82,3 @@ export const getUserByIdService = async (id) => {
   }
   return user;
 };
-
-

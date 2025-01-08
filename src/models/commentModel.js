@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import { fetchCommentable } from '../service/commentService.js';
-import likeRepository from '../repository/likeRepository.js';
+
 import commentRepository from '../repository/commentRepository.js';
+import likeRepository from '../repository/likeRepository.js';
+import { fetchCommentable } from '../service/commentService.js';
 
 const commentSchema = new mongoose.Schema(
   {

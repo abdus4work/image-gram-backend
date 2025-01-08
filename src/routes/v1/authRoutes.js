@@ -7,7 +7,10 @@ import {
   signup
 } from '../../controller/authController.js';
 import { isAuthenticated } from '../../middleware/authMiddleware.js';
-import { zodSignInSchema, zodSignUpSchema } from '../../validators/zodAuthSchema.js';
+import {
+  zodSignInSchema,
+  zodSignUpSchema
+} from '../../validators/zodAuthSchema.js';
 import { validate } from '../../validators/zodValidator.js';
 
 const authRouter = express.Router();
