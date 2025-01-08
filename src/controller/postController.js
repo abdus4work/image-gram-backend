@@ -10,6 +10,7 @@ import {
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
+import { getAllCommentsByPostService } from '../service/commentService.js';
 
 export const createPost = async (req, res, next) => {
   try {
@@ -69,6 +70,35 @@ export const getPost = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getAllCommentsByPostId = async (req,res,next)=>{
+  try{
+    const postId = req.params.postId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    if(!postId){
+      throw new CustomError(
+        StatusCodes.BAD_REQUEST,
+        ErrorCodes.INVALID_INPUT,
+        'Post id is required',
+        {},
+        {
+          inputData: req.params
+        }
+      );
+    }
+    const data = await getAllCommentsByPostService(postId,page,limit);
+
+    res.status(StatusCodes.OK).json(
+      new SuccessResponse(StatusCodes.OK, 'Comments fetched successfully', {
+        data
+      }).sendResponse()
+    );
+  }catch(err){
+    next(err);
+  }
+}
+
 
 export const deletePost = async (req, res, next) => {
   try {

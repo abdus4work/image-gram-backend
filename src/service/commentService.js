@@ -83,6 +83,25 @@ export const getCommentByIdService = async (id) => {
   return comment;
 };
 
+export const getAllCommentsByPostService = async (postId,page,limit)=>{
+  const comments = await commentRepository.getAllCommentByPostId(postId,{createdAt: -1},page,limit);
+  if (!comments) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      ErrorCodes.RESOURCE_NOT_FOUND,
+      'Comments not found',
+      {},
+      { inputData: postId }
+    );
+  }
+
+  const totalComments = await commentRepository.countComment({onModel:'Post',commentableId: postId});
+  const totalPages = Math.ceil(totalComments / limit);
+  const meta = { totalComments, totalPages, page, limit };
+
+  return { data: comments, meta };
+}
+
 const addCommentToCommentable = async (comment, commentable) => {
   if (comment.onModel === 'Post') {
     commentable.comments.push(comment._id);

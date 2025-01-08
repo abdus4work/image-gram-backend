@@ -4,6 +4,7 @@ import {
   createPost,
   deletePost,
   generateSignedUrl,
+  getAllCommentsByPostId,
   getAllPosts,
   getPost
 } from '../../controller/postController.js';
@@ -18,5 +19,5 @@ postRouter.get('/', isAuthenticated, getAllPosts);
 postRouter.get('/:postId', isAuthenticated, getPost);
 postRouter.get('/generate-signed-url', isAuthenticated, generateSignedUrl);
 postRouter.delete('/:postId', isAuthenticated, deletePost);
-
+postRouter.get('/:postId/comments', isAuthenticated, getAllCommentsByPostId);
 export default postRouter;
