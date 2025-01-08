@@ -11,6 +11,6 @@ const v1Router = express.Router();
 v1Router.use('/auth', authRouter);
 v1Router.use('/users', userRouter);
 v1Router.use('/posts', postRouter);
-v1Router.use('/like', likeRouter);
-v1Router.use('/comment', commentRouter);
+v1Router.use('/likes', likeRouter);
+v1Router.use('/comments', commentRouter);
 export default v1Router;
