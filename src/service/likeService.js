@@ -64,6 +64,32 @@ export const deleteLikeService = async (id, userId) => {
   return await likeRepository.delete(id);
 };
 
+export const getAllLikesByLikeableService = async (onModel, likeableId,page=1,limit=10)=>{
+  const likeable = await fetchLikeable(onModel, likeableId);
+  if (!likeable) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      ErrorCodes.RESOURCE_NOT_FOUND,
+      'Likeable not found',
+      {},
+      { inputData: { onModel, likeableId } }
+    );
+  }
+
+  const likes = await likeRepository.getAll(
+    {onModel, likeableId},
+    {path: 'user', select: 'fullName username avatar'},
+    '-__v',
+    page,
+    limit,
+    {createdAt: -1}
+  );
+  const totalLikes = await likeRepository.countLikes({onModel, likeableId});
+  const totalPages = Math.ceil(totalLikes / limit);
+  const meta = {totalLikes, totalPages, page, limit};
+  return {data: likes, meta};
+}
+
 const addLikeToLikeable = async (like, likeable) => {
   likeable.likes.push(like._id);
   await likeable.save();
