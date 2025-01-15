@@ -13,14 +13,7 @@ export const createPostService = async (data) => {
 export const getAllPostsService = async (page, limit) => {
   const posts = await postRepository.getAll(
     {},
-    [
-      { path: 'user', select: 'fullName username avatar' },
-      {
-        path: 'likes',
-        select: 'user onModel',
-        populate: { path: 'user', select: 'fullName username avatar' }
-      }
-    ],
+    { path: 'user', select: 'fullName username avatar' },
     '-__v',
     page,
     limit
@@ -50,7 +43,10 @@ export const getAllPostsByUserService = async (
 };
 
 export const getPostByIdService = async (postId) => {
-  return await postRepository.getById(postId);
+  return await postRepository.getById(postId, {
+    path: 'user',
+    select: 'fullName username avatar'
+  });
 };
 
 export const updatePostService = async (postId, data) => {

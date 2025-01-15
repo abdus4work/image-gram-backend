@@ -117,6 +117,26 @@ export const generateNewToken = async (req, res, next) => {
       }).sendResponse()
     );
   } catch (err) {
+    console.log(err.name);
+    if(err.name==='JsonWebTokenError'){
+      return next(
+        new CustomError(
+          StatusCodes.UNAUTHORIZED,
+          ErrorCodes.UNAUTHORIZED,
+          'Invalid token'
+        )
+      );
+    }
+
+    if(err.name==='TokenExpiredError'){
+      return next(
+        new CustomError(
+          StatusCodes.UNAUTHORIZED,
+          ErrorCodes.UNAUTHORIZED,
+          'Token expired'
+        )
+      );
+    }
     next(err);
   }
 };

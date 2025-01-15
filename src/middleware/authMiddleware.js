@@ -4,6 +4,7 @@ import configs from '../configs/serverConfig.js';
 import { verifyTokenService } from '../service/authService.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
+import userRepository from '../repository/userRepository.js';
 
 export const isAuthenticated = async (req, res, next) => {
   try {
@@ -30,6 +31,26 @@ export const isAuthenticated = async (req, res, next) => {
 
     const decoded = await verifyTokenService(token, configs.JWT_ACCESS_SECRET);
     if (!decoded) {
+      return next(
+        new CustomError(
+          StatusCodes.UNAUTHORIZED,
+          ErrorCodes.UNAUTHORIZED,
+          'Invalid token'
+        )
+      );
+    }
+    const user = await userRepository.getById(decoded.id);
+    if (!user) {
+      return next(
+        new CustomError(
+          StatusCodes.UNAUTHORIZED,
+          ErrorCodes.UNAUTHORIZED,
+          'User not found'
+        )
+      );
+    }
+
+    if(user.refreshToken==='') {
       return next(
         new CustomError(
           StatusCodes.UNAUTHORIZED,

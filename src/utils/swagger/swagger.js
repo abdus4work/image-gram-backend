@@ -1,10 +1,34 @@
 import swaggerJsDoc from 'swagger-jsdoc';
 
+import { swaggerAPIPath } from './swaggerAPIPath.js';
 import {
-  swaggerCommentCreateSchema, swaggerCommentResponseSchema,
-  swaggerLikeCreateSchema, swaggerLikeResponseSchema,
-  swaggerPostSchema, swaggerUserCreateSchema, swaggerUserLoginResponseSchema, swaggerUserLoginSchema,
-  swaggerUserSchema, swaggerUserSignUpResponseSchema
+  swaggerGenerateSignedUrlSuccessSchema,
+  swaggerGetAllPostsSuccessSchema,
+  swaggerGetPostNotFoundSchema,
+  swaggerGetPostSuccessSchema,
+  swaggerGetUserNotFoundSchema,
+  swaggerGetUserSuccessSchema,
+  swaggerGetUserUnauthorizedSchema,
+  swaggerImageUploadSchema,
+  swaggerImageUploadSuccessSchema,
+  swaggerLoginBadRequestSchema,
+  swaggerLoginSchema,
+  swaggerLoginSuccessSchema,
+  swaggerLoginUnauthorizedSchema,
+  swaggerLogoutSuccessSchema,
+  swaggerLogoutUnauthorizedSchema,
+  swaggerPostBadRequestSchema,
+  swaggerPostSchema,
+  swaggerPostSuccessSchema,
+  swaggerRefreshTokenBadRequestSchema,
+  swaggerRefreshTokenSuccessSchema,
+  swaggerRefreshTokenUnauthorizedSchema,
+  swaggerServerErrorSchema,
+  swaggerSignUpBadRequestSchema,
+  swaggerSignUpConflictSchema,
+  swaggerSignUpSchema,
+  swaggerSignUpSuccessSchema,
+  swaggerUnauthorizedSchema
 } from './swaggerSchema.js';
 
 const options = {
@@ -12,20 +36,38 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Image Gram API',
-      version: '1.0.0',
+      version: '1.0.0'
     },
-    components:{
-      schemas:{
-        User: swaggerUserSchema,
-        Post: swaggerPostSchema,
-        LikeCreate: swaggerLikeCreateSchema,
-        CommentCreate: swaggerCommentCreateSchema,
-        CommentResponse: swaggerCommentResponseSchema,
-        LikeResponse: swaggerLikeResponseSchema,
-        UserCreate: swaggerUserCreateSchema,
-        UserResponse: swaggerUserSignUpResponseSchema,
-        Login: swaggerUserLoginSchema,
-        LoginResponse: swaggerUserLoginResponseSchema
+    paths: swaggerAPIPath,
+    components: {
+      schemas: {
+        Signup: swaggerSignUpSchema,
+        SignupResponse: swaggerSignUpSuccessSchema,
+        SignupConflict: swaggerSignUpConflictSchema,
+        SignupBadRequest:swaggerSignUpBadRequestSchema,
+        Login: swaggerLoginSchema,
+        LoginSuccess:swaggerLoginSuccessSchema,
+        LoginBadRequest:swaggerLoginBadRequestSchema,
+        LoginUnauthorized:swaggerLoginUnauthorizedSchema,
+        RefreshTokenSuccess:swaggerRefreshTokenSuccessSchema,
+        RefreshTokenBadRequest:swaggerRefreshTokenBadRequestSchema,
+        ServerError:swaggerServerErrorSchema,
+        RefreshTokenUnauthorized:swaggerRefreshTokenUnauthorizedSchema,
+        LogoutSuccess:swaggerLogoutSuccessSchema,
+        LogoutUnauthorized:swaggerLogoutUnauthorizedSchema,
+        GetUserSuccess:swaggerGetUserSuccessSchema,
+        GetUserUnauthorized:swaggerGetUserUnauthorizedSchema,
+        GetUserNotFound: swaggerGetUserNotFoundSchema,
+        Post:swaggerPostSchema,
+        PostSuccess:swaggerPostSuccessSchema,
+        Unauthorized:swaggerUnauthorizedSchema,
+        PostBadRequest:swaggerPostBadRequestSchema,
+        GenerateSignedUrl: swaggerGenerateSignedUrlSuccessSchema,
+        PostImageUpload:swaggerImageUploadSchema,
+        PostImageUploadSuccess:swaggerImageUploadSuccessSchema,
+        GetAllPostSuccess:swaggerGetAllPostsSuccessSchema,
+        GetPostSuccess:swaggerGetPostSuccessSchema,
+        PostNotFound:swaggerGetPostNotFoundSchema
       },
       securitySchemes: {
         bearerAuth: {
@@ -42,9 +84,16 @@ const options = {
     ]
   },
 
-  apis:['./src/routes/v1/*.js'] // files containing annotations as above
+  apis: ['./src/routes/v1/*.js'] // files containing annotations as above
 };
 
-const swaggerDocs = swaggerJsDoc(options);
+export const swaggerUiOptions = {
+  swaggerOptions: {
+    defaultModelsExpandDepth: -1, // Hides models section entirely
+  },
+};
 
-export default swaggerDocs;
+export const swaggerDocs = swaggerJsDoc(options);
+
+
+

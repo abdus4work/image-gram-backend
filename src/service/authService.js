@@ -27,7 +27,8 @@ export const signUpService = async (data) => {
 
   // Updating user with refresh token
   const updatedUser = await updateUserService(user._id, {
-    refreshToken
+    refreshToken,
+    loggedInAt: new Date()
   });
 
   // TODO: implement sending email
@@ -72,10 +73,11 @@ export const loginService = async (data) => {
   });
   const refreshToken = await generateRefreshTokenService({ id: user._id });
   const updatedUser = await updateUserService(user._id, {
-    refreshToken
+    refreshToken,
+    loggedInAt: new Date()
   });
   return {
-    updatedUser,
+    user:updatedUser,
     accessToken,
     refreshToken
   };
@@ -94,7 +96,7 @@ export const logoutService = async (refreshToken) => {
       'Invalid token'
     );
   }
-  await updateUserService(user._id, { refreshToken: '' });
+  await updateUserService(user._id, { refreshToken: '',loggedOutAt: new Date() });
 };
 
 export const generateNewAccessTokenService = async (refreshToken) => {

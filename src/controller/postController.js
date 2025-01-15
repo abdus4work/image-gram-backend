@@ -165,6 +165,7 @@ export const generateSignedUrl = async (req, res, next) => {
       }).sendResponse()
     );
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };

@@ -45,7 +45,13 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken: {
       type: String
-    }
+    },
+    loggedInAt: {
+      type: Date
+    },
+    loggedOutAt: {
+      type: Date
+    },
   },
   {
     timestamps: true
