@@ -213,7 +213,7 @@ export const swaggerAPIPath = {
     }
   },
 
-  '/api/v1/auth/users/{username}': {
+  '/api/v1/users/{username}': {
     get: {
       summary: 'Get user by username',
       tags: ['👤 User'],
@@ -269,10 +269,7 @@ export const swaggerAPIPath = {
           }
         }
       }
-    }
-  },
-
-  '/api/v1/users/{username}': {
+    },
     delete: {
       summary: 'Delete user',
       tags: ['👤 User'],
@@ -320,6 +317,8 @@ export const swaggerAPIPath = {
       }
     }
   },
+
+
   '/api/v1/posts': {
     post: {
       summary: 'Create post',
