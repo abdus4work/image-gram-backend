@@ -1,10 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 
 import configs from '../configs/serverConfig.js';
+import userRepository from '../repository/userRepository.js';
 import { verifyTokenService } from '../service/authService.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
-import userRepository from '../repository/userRepository.js';
 
 export const isAuthenticated = async (req, res, next) => {
   try {

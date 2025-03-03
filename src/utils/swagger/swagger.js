@@ -3,6 +3,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import { swaggerAPIPath } from './swaggerAPIPath.js';
 import {
   swaggerGenerateSignedUrlSuccessSchema,
+  swaggerGetAllCommentsByPostIdSuccessSchema,
+  swaggerGetAllLikesByPostIdSuccessSchema,
   swaggerGetAllPostsSuccessSchema,
   swaggerGetPostNotFoundSchema,
   swaggerGetPostSuccessSchema,
@@ -67,7 +69,9 @@ const options = {
         PostImageUploadSuccess:swaggerImageUploadSuccessSchema,
         GetAllPostSuccess:swaggerGetAllPostsSuccessSchema,
         GetPostSuccess:swaggerGetPostSuccessSchema,
-        PostNotFound:swaggerGetPostNotFoundSchema
+        PostNotFound:swaggerGetPostNotFoundSchema,
+        GetAllCommentsByPostId:swaggerGetAllCommentsByPostIdSuccessSchema,
+        GetAllLikesByPostId:swaggerGetAllLikesByPostIdSuccessSchema
       },
       securitySchemes: {
         bearerAuth: {
