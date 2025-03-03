@@ -1,5 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { getAllCommentsByCommentableService } from '../service/commentService.js';
+import { getAllLikesByLikeableService } from '../service/likeService.js';
 import {
   createPostService,
   deletePostService,
@@ -10,8 +12,6 @@ import {
 import SuccessResponse from '../utils/common/successResponse.js';
 import CustomError from '../utils/error/customError.js';
 import ErrorCodes from '../utils/error/errorCodes.js';
-import { getAllCommentsByCommentableService } from '../service/commentService.js';
-import { getAllLikesByLikeableService } from '../service/likeService.js';
 
 export const createPost = async (req, res, next) => {
   try {
@@ -72,12 +72,12 @@ export const getPost = async (req, res, next) => {
   }
 };
 
-export const getAllCommentsByPostId = async (req,res,next)=>{
-  try{
+export const getAllCommentsByPostId = async (req, res, next) => {
+  try {
     const postId = req.params.postId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    if(!postId){
+    if (!postId) {
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
         ErrorCodes.INVALID_INPUT,
@@ -88,7 +88,12 @@ export const getAllCommentsByPostId = async (req,res,next)=>{
         }
       );
     }
-    const {comments,meta} = await getAllCommentsByCommentableService('Post',postId,page,limit);
+    const { comments, meta } = await getAllCommentsByCommentableService(
+      'Post',
+      postId,
+      page,
+      limit
+    );
 
     res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'Comments fetched successfully', {
@@ -96,17 +101,17 @@ export const getAllCommentsByPostId = async (req,res,next)=>{
         meta
       }).sendResponse()
     );
-  }catch(err){
+  } catch (err) {
     next(err);
   }
-}
+};
 
-export const getAllLikesByPostId = async (req,res,next)=>{
-  try{
+export const getAllLikesByPostId = async (req, res, next) => {
+  try {
     const postId = req.params.postId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    if(!postId){
+    if (!postId) {
       throw new CustomError(
         StatusCodes.BAD_REQUEST,
         ErrorCodes.INVALID_INPUT,
@@ -117,18 +122,23 @@ export const getAllLikesByPostId = async (req,res,next)=>{
         }
       );
     }
-    const data = await getAllLikesByLikeableService('Post',postId,page,limit);
+    const {data,meta} = await getAllLikesByLikeableService(
+      'Post',
+      postId,
+      page,
+      limit
+    );
 
     res.status(StatusCodes.OK).json(
       new SuccessResponse(StatusCodes.OK, 'Likes fetched successfully', {
-        data
+        likes:data,
+        meta
       }).sendResponse()
     );
-  }catch(err){
+  } catch (err) {
     next(err);
   }
-}
-
+};
 
 export const deletePost = async (req, res, next) => {
   try {

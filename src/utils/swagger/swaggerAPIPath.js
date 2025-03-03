@@ -623,6 +623,176 @@ export const swaggerAPIPath = {
           }
         }
       }
+    },
+    delete:{
+      summary:'Delete post',
+      tags:['📝 Post'],
+      parameters:[
+        {
+          name:'postId',
+          in:'path',
+          required:true,
+          schema:{
+            type:'string'
+          }
+        }
+      ],
+      responses:{
+        200:{
+          description:'Post deleted successfully',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/GetPostSuccess'
+              }
+            }
+          }
+        },
+        401:{
+          description:'Unauthorized',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/Unauthorized'
+              }
+            }
+          }
+        },
+        500:{
+          description:'Server error',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/ServerError'
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  'api/v1/posts/{postId}/comments': {
+    get:{
+      summary:'Get all comments by post id',
+      tags:['📝 Post'],
+      parameters:[
+        {
+          name:'postId',
+          in:'path',
+          required:true,
+          schema:{
+            type:'string'
+          }
+        },
+        {
+          name:'page',
+          in:'query',
+          schema:{
+            type:'integer'
+          }
+        },
+        {
+          name:'limit',
+          in:'query',
+          schema:{
+            type:'integer'
+          }
+        }
+      ],
+      responses:{
+        200:{
+          description:'success',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/GetAllCommentsByPostId'
+              }
+            }
+          }
+        },
+        401:{
+          description:'Unauthorized',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/Unauthorized'
+              }
+            }
+          }
+        },
+        500:{
+          description:'Server error',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/ServerError'
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  'api/v1/posts/{postId}/likes': {
+    get:{
+      summary:'Get all likes by post id',
+      tags:['📝 Post'],
+      parameters:[
+        {
+          name:'postId',
+          in:'path',
+          required:true,
+          schema:{
+            type:'string'
+          }
+        },
+        {
+          name:'page',
+          in:'query',
+          schema:{
+            type:'integer'
+          }
+        },
+        {
+          name:'limit',
+          in:'query',
+          schema:{
+            type:'integer'
+          }
+        }
+      ],
+      responses:{
+        200:{
+          description:'success',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/GetAllLikesByPostId'
+              }
+            }
+          }
+        },
+        401:{
+          description:'Unauthorized',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/Unauthorized'
+              }
+            }
+          }
+        },
+        500:{
+          description:'Server error',
+          content:{
+            'application/json':{
+              schema:{
+                $ref:'#/components/schemas/ServerError'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };

@@ -1124,17 +1124,221 @@ export const swaggerGetPostNotFoundSchema = {
       example: 'Post not found'
     },
     details: {
-      type: 'object',
+      type: 'object'
     },
     data: {
       type: 'object',
-      properties:{
-        inputData:{
+      properties: {
+        inputData: {
           type: 'object',
-          properties:{
-            postId:{
+          properties: {
+            postId: {
               type: 'string',
               example: '60f2e7e4b5a8b50015e6d1b5'
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const swaggerGetAllCommentsByPostIdSuccessSchema = {
+  type: 'object',
+  properties: {
+    success: {
+      type: 'boolean',
+      example: true
+    },
+    statusCode: {
+      type: 'number',
+      example: 200
+    },
+    message: {
+      type: 'string',
+      example: 'success'
+    },
+    data: {
+      type: 'object',
+      properties: {
+        comments: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              _id: {
+                type: 'string',
+                example: '60f2e7e4b5a8b50015e6d1b5'
+              },
+              content: {
+                type: 'string',
+                example: 'Comment'
+              },
+              user: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '60f2e7e4b5a8b50015e6d1b5'
+                  },
+                  fullName: {
+                    type: 'string',
+                    example: 'John Doe'
+                  },
+                  username: {
+                    type: 'string',
+                    example: 'jhon123'
+                  },
+                  avatar: {
+                    type: 'string',
+                    example: 'http://localhost:5000/uploads/avatar.png'
+                  }
+                }
+              },
+              onModel: {
+                type: 'string',
+                example: 'Post'
+              },
+              commentableId: {
+                type: 'string',
+                example: '60f2e7e4b5a8b50015e6d1b5'
+              },
+              replies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                example: []
+              },
+              likes: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                example: []
+              },
+              createdAt: {
+                type: 'string',
+                example: '2025-01-09T06:10:03.965Z'
+              },
+              updatedAt: {
+                type: 'string',
+                example: '2025-01-09T06:10:03.965Z'
+              }
+            }
+          }
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            totalLikes: {
+              type: 'number',
+              example: 1
+            },
+            totalPages: {
+              type: 'number',
+              example: 1
+            },
+            page: {
+              type: 'number',
+              example: 1
+            },
+            limit: {
+              type: 'number',
+              example: 10
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const swaggerGetAllLikesByPostIdSuccessSchema = {
+  type: 'object',
+  properties: {
+    success: {
+      type: 'boolean',
+      example: true
+    },
+    statusCode: {
+      type: 'number',
+      example: 200
+    },
+    message: {
+      type: 'string',
+      example: 'success'
+    },
+    data: {
+      type: 'object',
+      properties: {
+        likes: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              _id: {
+                type: 'string',
+                example: '60f2e7e4b5a8b50015e6d1b5'
+              },
+              user: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '60f2e7e4b5a8b50015e6d1b5'
+                  },
+                  fullName: {
+                    type: 'string',
+                    example: 'John Doe'
+                  },
+                  username: {
+                    type: 'string',
+                    example: 'jhon123'
+                  },
+                  avatar: {
+                    type: 'string',
+                    example: 'http://localhost:5000/uploads/avatar.png'
+                  }
+                }
+              },
+              onModel: {
+                type: 'string',
+                example: 'Post'
+              },
+              likeableId: {
+                type: 'string',
+                example: '60f2e7e4b5a8b50015e6d1b5'
+              },
+              createdAt: {
+                type: 'string',
+                example: '2025-01-09T06:10:03.965Z'
+              },
+              updatedAt: {
+                type: 'string',
+                example: '2025-01-09T06:10:03.965Z'
+              }
+            }
+          }
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            totalLikes: {
+              type: 'number',
+              example: 1
+            },
+            totalPages: {
+              type: 'number',
+              example: 1
+            },
+            page: {
+              type: 'number',
+              example: 1
+            },
+            limit: {
+              type: 'number',
+              example: 10
             }
           }
         }
